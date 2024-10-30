@@ -32,8 +32,20 @@ class TestSpreadSheet(TestCase):
         spreadsheet = SpreadSheet()
         self.assertEqual('#Error', spreadsheet.evaluate("='Apple"))
 
-    def test_cell_references_simple_formula(self):
+    def test_cell_references_cell_int(self):
         spreadsheet = SpreadSheet()
         spreadsheet.set("A1", "=B1")
         spreadsheet.set("B1", "42")
         self.assertEqual(42, spreadsheet.evaluate("A1"))
+
+    def test_cell_references_cell_double(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "=B1")
+        spreadsheet.set("B1", "42.5")
+        self.assertEqual("#Error", spreadsheet.evaluate("A1"))
+
+    def test_cell_references_cell_circular(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "=B1")
+        spreadsheet.set("B1", "=A1")
+        self.assertEqual("#Circular", spreadsheet.evaluate("A1"))

@@ -32,6 +32,9 @@ class SpreadSheet:
         except ValueError:
             return '#Error'
 
+        except RecursionError:
+            return '#Circular'
+
     def isformula(self, cell: str) -> bool:
         return cell[0] == '='
 
