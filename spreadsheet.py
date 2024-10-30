@@ -14,6 +14,9 @@ class SpreadSheet:
 
     def evaluate(self, cell: str) -> int | str:
         try:
+            if self.isstrconcatenation(cell):
+                return self.handle_string_concatenation(cell)
+
             # Handle formula cases
             if self.isformula(cell):
                 cell = self.handle_simple_formula(cell)
@@ -64,6 +67,20 @@ class SpreadSheet:
         letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         return cell[0] in letters and cell[1:].isnumeric()
 
+    def isstrconcatenation(self, cell: str) -> bool:
+        if "&" in cell:
+            return True
+
+    def handle_string_concatenation(self, cell: str) -> str:
+        cells = cell.split('&')
+        result = ''
+        for c in cells:
+            value = self.evaluate(c)
+            self.handle_cell_errors(value)
+            result += value
+
+        return result
+
     def handle_simple_formula(self, cell: str) -> int | str:
         return cell.replace('=', '')
 
@@ -82,7 +99,7 @@ class SpreadSheet:
     def handle_simple_int(self, cell: str) -> int:
         return int(cell)
 
-    def handle_calculation_errors(self, value: str | int) -> None:
+    def handle_cell_errors(self, value: str | int) -> None:
         if value == '#Error':
             raise ValueError
 
@@ -103,7 +120,7 @@ class SpreadSheet:
         while index < len(cell):
             if cell[index].isalpha():
                 value = self.evaluate(self.get(cell[index] + cell[index + 1]))
-                self.handle_calculation_errors(value)
+                self.handle_cell_errors(value)
                 calc_array.append(value)
                 has_references = True
                 index += 2
