@@ -22,6 +22,10 @@ class SpreadSheet:
             if self.isreference(cell):
                 return self.evaluate(self.get(cell))
 
+            # Handle calculation cases
+            if self.iscalculation(cell):
+                return self.handle_simple_calculation(cell)
+
             # Handle simple int cases
             if cell.isnumeric():
                 return self.handle_simple_int(cell)
@@ -34,6 +38,21 @@ class SpreadSheet:
 
         except RecursionError:
             return '#Circular'
+
+    def iscalculation(self, cell: str) -> bool:
+        if '+' in cell:
+            return True
+
+        if '-' in cell:
+            return True
+
+        if '*' in cell:
+            return True
+
+        if '/' in cell:
+            return True
+
+        return False
 
     def isformula(self, cell: str) -> bool:
         return cell[0] == '='
@@ -59,3 +78,11 @@ class SpreadSheet:
 
     def handle_simple_int(self, cell: str) -> int:
         return int(cell)
+
+    def handle_simple_calculation(self, cell: str) -> int | str:
+        cell = eval(cell.replace('=', ''))
+
+        if isinstance(cell, float):
+            return '#Error'
+
+        return self.handle_simple_int(cell)

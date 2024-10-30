@@ -49,3 +49,15 @@ class TestSpreadSheet(TestCase):
         spreadsheet.set("A1", "=B1")
         spreadsheet.set("B1", "=A1")
         self.assertEqual("#Circular", spreadsheet.evaluate("A1"))
+
+    def test_cell_content_is_arithmetic_operator_addition(self):
+        spreadsheet = SpreadSheet()
+        self.assertEqual(4, spreadsheet.evaluate("=1+3"))
+
+    def test_cell_content_is_arithmetic_operator_addition_double(self):
+        spreadsheet = SpreadSheet()
+        self.assertEqual("#Error", spreadsheet.evaluate("=1+3.5"))
+
+    def test_cell_content_is_arithmetic_operator_addition_multiplication(self):
+        spreadsheet = SpreadSheet()
+        self.assertEqual(7, spreadsheet.evaluate("=1+3*2"))
