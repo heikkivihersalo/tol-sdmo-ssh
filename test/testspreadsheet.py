@@ -109,3 +109,13 @@ class TestSpreadSheet(TestCase):
         spreadsheet.set("A1", "='Hello'&B1")
         spreadsheet.set("B1", "=A1")
         self.assertEqual("#Circular", spreadsheet.evaluate("A1"))
+
+    def test_is_arithmetic_operator_reference_addition_multiplication_parentheses(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "=2*(1+2)")
+        self.assertEqual(6, spreadsheet.evaluate("A1"))
+
+    def test_is_arithmetic_operator_reference_addition_multiplication_spaces(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "= 2 * (1 + 2)")
+        self.assertEqual(6, spreadsheet.evaluate("A1"))
