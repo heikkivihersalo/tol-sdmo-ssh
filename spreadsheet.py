@@ -14,6 +14,9 @@ class SpreadSheet:
 
     def evaluate(self, cell: str) -> int | str:
         try:
+            if self.is_formula(cell):
+                cell = cell.replace('=', '')
+
             # ========================================
             # Handle numbers
             # ========================================
@@ -35,5 +38,12 @@ class SpreadSheet:
             if not is_correctly_formatted:
                 raise ValueError
 
+            # ========================================
+            # Handle formulas
+            # ========================================
+
         except ValueError:
             return '#Error'
+
+    def is_formula(self, cell: str) -> bool:
+        return cell[0] == '='
