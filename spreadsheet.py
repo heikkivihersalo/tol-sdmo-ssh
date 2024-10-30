@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 class SpreadSheet:
 
     def __init__(self):
@@ -11,4 +13,8 @@ class SpreadSheet:
         return self._cells.get(cell, '')
 
     def evaluate(self, cell: str) -> int | str:
-        pass
+        try:
+            return int(cell)
+        except ValueError:
+            return '#Error'
+
