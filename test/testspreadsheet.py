@@ -115,7 +115,32 @@ class TestSpreadSheet(TestCase):
         spreadsheet.set("A1", "=2*(1+2)")
         self.assertEqual(6, spreadsheet.evaluate("A1"))
 
-    def test_is_arithmetic_operator_reference_addition_multiplication_spaces(self):
+    def test_is_arithmetic_operator_addition_multiplication_spaces(self):
         spreadsheet = SpreadSheet()
         spreadsheet.set("A1", "= 2 * (1 + 2)")
         self.assertEqual(6, spreadsheet.evaluate("A1"))
+
+
+    def test_is_arithmetic_operator_reference_addition_multiplication(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "=2*(1+B1)")
+        spreadsheet.set("B1", "2")
+        self.assertEqual(6, spreadsheet.evaluate("A1"))
+
+    def test_is_arithmetic_operator_reference_addition_multiplication_spaces(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "= 2 * (1 + B1)")
+        spreadsheet.set("B1", "2")
+        self.assertEqual(6, spreadsheet.evaluate("A1"))
+
+    def test_is_arithmetic_operator_reference_addition_multiplication_double(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "=2*(1+B1)")
+        spreadsheet.set("B1", "2.1")
+        self.assertEqual("#Error", spreadsheet.evaluate("A1"))
+
+    def test_is_arithmetic_operator_reference_addition_multiplication_circular(self):
+        spreadsheet = SpreadSheet()
+        spreadsheet.set("A1", "=2*(1+B1)")
+        spreadsheet.set("B1", "=A1")
+        self.assertEqual("#Circular", spreadsheet.evaluate("A1"))
