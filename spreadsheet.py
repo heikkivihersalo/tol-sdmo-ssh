@@ -14,7 +14,26 @@ class SpreadSheet:
 
     def evaluate(self, cell: str) -> int | str:
         try:
-            return int(cell)
+            # ========================================
+            # Handle numbers
+            # ========================================
+            if cell.isnumeric():
+                return int(cell)
+
+            # ========================================
+            # Handle strings
+            # ========================================
+
+            # Feature flags
+            is_correctly_formatted = cell[0] == cell[-1] == "'"
+
+            # Handle correct strings "'Apple'"
+            if is_correctly_formatted:
+                return cell.replace('"', '').replace("'", '')
+
+            # Handle incorrect strings "'Apple"
+            if not is_correctly_formatted:
+                raise ValueError
+
         except ValueError:
             return '#Error'
-

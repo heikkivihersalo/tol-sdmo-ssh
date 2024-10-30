@@ -11,3 +11,11 @@ class TestSpreadSheet(TestCase):
     def test_cell_content_is_double_return_error_string(self):
         spreadsheet = SpreadSheet()
         self.assertEqual('#Error', spreadsheet.evaluate('1.5'))
+
+    def test_cell_content_is_string_return_error_string(self):
+        spreadsheet = SpreadSheet()
+        self.assertEqual('#Error', spreadsheet.evaluate("'Apple"))
+
+    def test_cell_content_is_correct_string(self):
+        spreadsheet = SpreadSheet()
+        self.assertEqual('Apple', spreadsheet.evaluate("'Apple'"))
