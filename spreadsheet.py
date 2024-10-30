@@ -36,6 +36,9 @@ class SpreadSheet:
         except ValueError:
             return '#Error'
 
+        except ZeroDivisionError:
+            return '#Error'
+
         except RecursionError:
             return '#Circular'
 
@@ -79,7 +82,38 @@ class SpreadSheet:
     def handle_simple_int(self, cell: str) -> int:
         return int(cell)
 
+    def handle_calculation_errors(self, value: str | int) -> None:
+        if value == '#Error':
+            raise ValueError
+
+        if value == '#Circular':
+            raise RecursionError
+
+        if value == '.':
+            raise ValueError
+
+        if isinstance(value, float):
+            raise ValueError
+
     def handle_simple_calculation(self, cell: str) -> int | str:
+        calc_array = []
+        has_references = False
+        index = 0
+
+        while index < len(cell):
+            if cell[index].isalpha():
+                value = self.evaluate(self.get(cell[index] + cell[index + 1]))
+                self.handle_calculation_errors(value)
+                calc_array.append(value)
+                has_references = True
+                index += 2
+            else:
+                calc_array.append(cell[index])
+                index += 1
+
+        if has_references:
+            cell = ''.join(map(str, calc_array))
+
         cell = eval(cell.replace('=', ''))
 
         if isinstance(cell, float):
